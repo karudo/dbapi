@@ -1,11 +1,21 @@
 module.exports =
   name: 'Databases'
+
+  init: ->
+
   methods:
     fetch:
-      params: ->
+      #params & retval for next version
+      #params: ->
+      #retval: ->
+      func: (params)->
 
-      retval: ->
-      method: (params)->
+    add:
+      func: (fields)->
+    updateByPk:
+      func: (pk, fields)->
+    deleteByPk:
+      func: (pk)->
 
   childs:
-    tables: {}
+    tables: require './tables'

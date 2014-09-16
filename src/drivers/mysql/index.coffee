@@ -4,6 +4,8 @@ module.exports =
     user: 'string'
     password: 'password'
 
+  init: ->
+
   schema:
     databases: require './databases'
 

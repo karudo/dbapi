@@ -1,7 +1,13 @@
 
 class Collection
-  constructor: ->
+  constructor: (@driver, @schema, {@url, @urlArr})->
+    @Self = {}
 
+
+  execMethod: (methodName, args)->
+
+
+  getStructure: ->
 
 
 

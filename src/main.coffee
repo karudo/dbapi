@@ -48,9 +48,9 @@ class Main
       connection.getCollection collUrl
 
 
-  execCollectionMethod: (pastureId, collUrl, method, args)->
+  execCollectionMethod: (pastureId, collUrl, methodName, args)->
     @getCollection(pastureId, collUrl).then (collection)->
-      collection.execMethod method, args
+      collection.execMethod methodName, args
 
 
   @getInstance: (config)->
