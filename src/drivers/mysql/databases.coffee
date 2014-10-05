@@ -1,3 +1,5 @@
+promise = require '../../promise'
+
 module.exports =
   name: 'Databases'
 
@@ -8,10 +10,10 @@ module.exports =
       #params & retval for next version
       #params: ->
       #retval: ->
-      func: (params)->
+      func: (params)-> 111
 
     add:
-      func: (fields)->
+      func: (fields)-> throw new Error('1')
     updateByPk:
       func: (pk, fields)->
     deleteByPk:

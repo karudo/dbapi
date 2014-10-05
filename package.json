@@ -17,8 +17,10 @@
   },
   "homepage": "https://github.com/karudo/dbapi",
   "dependencies": {
-    "bluebird": "^2.3.2",
-    "lodash": "^2.4.1"
+    "bluebird": "^2.3.4",
+    "knex": "^0.7.3",
+    "lodash": "^2.4.1",
+    "mysql": "^2.5.1"
   },
   "devDependencies": {
     "coffee-script": "^1.8.0"

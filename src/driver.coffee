@@ -1,5 +1,5 @@
-Collection = requre './collection'
-
+Collection = require './collection'
+promise = require './promise'
 
 class Driver
   constructor: (@driverObject, @params)->
@@ -9,16 +9,16 @@ class Driver
 
   getCollection: (url)->
     unless @collections[url]
-      @collections[url] = promise.resolve().then ->
+      @collections[url] = promise.resolve().then =>
         urlArr = url.split('#').map (v)->
-          [name,query] = v.split(':')
+          [name, query] = v.split(':')
           {name, query}
-        collectionParams = urlArr.reduce (curSchema, step)->
+        collectionSchema = urlArr.reduce (curSchema, step)->
           curStepParams = curSchema.childs?[step.name]
           throw new Error("no childs #{step.name}") unless curStepParams
           curStepParams
         , childs: @driverObject.schema
-        new Collection(@, collectionParams, {url, urlArr})
+        new Collection(@, {schema: collectionSchema, url, urlArr})
       @collections[url].caught => delete @collections[url]
     @collections[url]
 
