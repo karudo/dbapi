@@ -2,8 +2,9 @@
 promise = require './promise'
 
 class Collection
-  constructor: (@driver, {@schema, @url, @urlArr})->
+  constructor: (@driver, @schema, @path)->
     @Self = driver: @driver.Self
+    @schema.init?.call(@)
 
 
   execMethod: (methodName, args...)->

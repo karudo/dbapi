@@ -1,3 +1,5 @@
+mysql = require 'mysql'
+
 module.exports =
   params:
     host: 'string'
@@ -5,6 +7,7 @@ module.exports =
     password: 'password'
 
   init: ->
+    console.log 777, @
 
   schema:
     databases: require './databases'

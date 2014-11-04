@@ -5,6 +5,7 @@ class Driver
   constructor: (@driverObject, @params)->
     @collections = {}
     @Self = {}
+    @driverObject.init?.call(@)
 
 
   getCollection: (url)->
@@ -18,7 +19,7 @@ class Driver
           throw new Error("no childs #{step.name}") unless curStepParams
           curStepParams
         , childs: @driverObject.schema
-        new Collection(@, {schema: collectionSchema, url, urlArr})
+        new Collection(@, collectionSchema, urlArr)
       @collections[url].caught => delete @collections[url]
     @collections[url]
 
