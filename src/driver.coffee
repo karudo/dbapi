@@ -14,11 +14,11 @@ class Driver
         urlArr = url.split('#').map (v)->
           [name, query] = v.split(':')
           {name, query}
-        collectionSchema = urlArr.reduce (curSchema, step)->
+        collectionSchema = urlArr.reduce ((curSchema, step)->
           curStepParams = curSchema.childs?[step.name]
           throw new Error("no childs #{step.name}") unless curStepParams
           curStepParams
-        , childs: @driverObject.schema
+        ), childs: @driverObject.schema
         new Collection(@, collectionSchema, urlArr)
       @collections[url].caught => delete @collections[url]
     @collections[url]
