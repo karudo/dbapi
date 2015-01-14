@@ -6,23 +6,23 @@ objectStr = 'object'
 {toString} = Object::
 {isArray} = Array
 
-getType = (object)->
-  type = typeof object
-  return undefinedStr if type is undefinedStr
-  if object
-    type = object.constructor.name
-  else
-    type = toString.call(object).slice 8, -1
-  type.toLowerCase()
-
-
 defaultTypesMap =
   buffer:
     type: 'blob'
-    callback: (v)-> new Buffer v
+    cbUnwrap: (v)-> new Buffer v
   date:
     type: 'date'
-    callback: (v)-> new Date v
+    cbUnwrap: (v)-> new Date v
+
+
+getType = (object)->
+  type = typeof object
+  return undefinedStr if type is undefinedStr
+  type = if object
+    object.constructor.name
+  else
+    toString.call(object).slice 8, -1
+  type.toLowerCase()
 
 
 getset = (obj, path, cb)->
@@ -47,8 +47,22 @@ each = (obj, cb)->
       cb key, obj[key]
   return
 
+
 typesO2A = (obj)-> [path.split('.'), type] for path, type of obj
 
+
+typesA2O = (arr, sep = '.')->
+  arr.reduce ((obj, [pathArr, type])->
+    obj[pathArr.join(sep)] = type
+    obj
+  ), {}
+
+
+
+extend = (objTo, objFrom)->
+  if objectStr is typeof objTo and objectStr is typeof objFrom
+    objTo[k] = objFrom[k] for k in Object.keys objFrom
+  objTo
 
 
 class GearJson
@@ -87,32 +101,30 @@ class GearJson
     types = @determineTypes(item, pathesSkip) unless types
     result = {item}
     if types.length
-      if options.hashTypes
-        result.types = types.reduce ((o, [pathArr, type])->
-          o[pathArr.join('.')] = type
-          o
-        ), {}
-      else
+      if options.arrTypes
         result.types = types
+      else
+        result.types = typesA2O types
     result
 
   wrapCollection: (items, options = {})->
-    {types, extItems, hashTypes} = options
+    {types, extItems, arrTypes} = options
     if not types or extItems
-      itemOpts = {hashTypes}
+      itemOpts = {arrTypes}
       if types
         itemOpts.pathesSkip = Object.keys types
       items = items.map (item)=> @wrapItem item, itemOpts
       extItems = yes
     result = {items}
-    result.types = types if types
+    if types
+      result.types = if arrTypes then typesO2A(types) else types
     result.extItems = yes if extItems
     result
 
   unwrapItem: (item, types)->
     types = typesO2A types unless isArray types
     for [path, type] in types
-      getset item, path, @typesMap[type].callback
+      getset item, path, @typesMap[type].cbUnwrap
     item
 
   unwrapCollection: ({items, types, extItems})->
@@ -125,6 +137,31 @@ class GearJson
       items.forEach (item)=> @unwrapItem item.item, item.types
       items = items.map (item)-> item.item
     items
+
+  Collection: (items, options)->
+    o = new Collection items, options
+    o.gj = @
+    o
+
+  Item: (item, options)->
+    o = new Item item, options
+    o.gj = @
+    o
+
+
+class Collection
+  constructor: (@items, @options)->
+
+  wrap: (options)->
+    @gj.wrapCollection @items, extend(@options, options)
+
+
+class Item
+  constructor: (@item, @options)->
+
+  wrap: (options)->
+    @gj.wrapItem @item, extend(@options, options)
+
 
 
 module.exports = GearJson

@@ -5,4 +5,4 @@ module.exports =
       func: -> 1
 
   init: ->
-    console.log 555,@,arguments
+    console.log 555, @, arguments
