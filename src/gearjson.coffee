@@ -18,10 +18,7 @@ defaultTypesMap =
 getType = (object)->
   type = typeof object
   return undefinedStr if type is undefinedStr
-  type = if object
-    object.constructor.name
-  else
-    toString.call(object).slice 8, -1
+  type = object?.constructor?.name or toString.call(object).slice 8, -1
   type.toLowerCase()
 
 
@@ -33,8 +30,7 @@ getset = (obj, path, cb)->
     if idx is last
       obj[key] = cb obj[key]
     else
-      return stopped = yes unless obj.hasOwnProperty(key)
-      obj[key]
+      if obj.hasOwnProperty(key) then obj[key] else stopped = yes
   ), obj
 
 
